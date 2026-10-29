@@ -1,0 +1,523 @@
+﻿<style>
+    /* ---------- Színkonstansok definíciója CSS változókként ---------- */
+    :root {
+        --color_white: #ffffff;
+        --color_light_blue: #6a2c8a;
+        --color_light_grey: #eef1f7;
+        --color_dark_navy: #1f2b46;
+        --color_slate_blue: #5c6b8a;
+        --color_slate_grey: #3d4a63;
+        --color_grey_blue_light: #f5f7fb;
+        --color_near_white: #fafbfe;
+        --color_cool_grey: #e6e9f2;
+        --color_warm_yellow: #fff8e1;
+        --color_amber_gold: #ffb300;
+        --color_bronze_brown: #6b5100;
+        --color_transparent_light_blue: rgba(31, 43, 70, 0.08);
+        --color_transparent_medium_blue: rgba(31, 43, 70, 0.15);
+    }
+
+    /* ---------- App Store tabs (CSS-only) ---------- */
+    .hcd-tabs input[type="radio"] { display: none; }
+
+    .hcd-tab-labels {
+        display: flex;
+        gap: 6px;
+        border-bottom: 2px solid var(--color_light_grey);
+        margin-bottom: 28px;
+        flex-wrap: wrap;
+    }
+    .hcd-tab-labels label {
+        cursor: pointer;
+        padding: 12px 26px;
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--color_slate_blue);
+        background: var(--color_grey_blue_light);
+        border: 1px solid var(--color_light_grey);
+        border-bottom: none;
+        border-radius: 8px 8px 0 0;
+        margin-bottom: -2px;
+        transition: all .2s ease;
+        user-select: none;
+    }
+    .hcd-tab-labels label:hover { color: var(--color_dark_navy); background: var(--color_light_grey); }
+
+    .hcd-tab-content { display: none; }
+
+    /* Active tab label */
+    #hcd-tab-desc:checked ~ .hcd-tab-labels label[for="hcd-tab-desc"],
+    #hcd-tab-tut:checked  ~ .hcd-tab-labels label[for="hcd-tab-tut"],
+    #hcd-tab-about:checked ~ .hcd-tab-labels label[for="hcd-tab-about"] {
+        background: var(--color_white);
+        color: var(--color_light_blue);
+        border-color: var(--color_light_grey);
+        border-bottom-color: var(--color_white);
+    }
+
+    /* Show active content */
+    #hcd-tab-desc:checked ~ #hcd-content-desc { display: block; }
+    #hcd-tab-tut:checked  ~ #hcd-content-tut  { display: block; }
+    #hcd-tab-about:checked ~ #hcd-content-about { display: block; }
+
+    /* ---------- Feature cards ---------- */
+    .hcd-feature-card {
+        background: var(--color_white);
+        border-radius: 12px;
+        padding: 0 28px 28px 28px;
+        box-shadow: 0 5px 20px var(--color_transparent_light_blue);
+        margin-bottom: 22px;
+        margin-left: 60px;
+        text-align: center;
+        overflow: hidden;
+    }
+    .hcd-feature-card:last-child { margin-bottom: 0; }
+
+    .hcd-card-header {
+        background: var(--color_dark_navy);
+        color: var(--color_white);
+        padding: 14px 18px;
+        font-size: 18px;
+        font-weight: 700;
+        margin: 0 -28px 20px -28px;
+        text-align: center;
+    }
+
+    .hcd-card-body {
+        margin-left: 32px;
+        text-align: left;
+    }
+
+    @media (max-width: 500px) {
+        .hcd-feature-card { margin-left: 0; }
+        .hcd-card-body    { margin-left: 0; }
+    }
+</style>
+
+
+<section class="oe_container">
+    <div class="oe_row oe_spaced">
+        <div class="oe_span12" style="text-align:center;">
+            <img src="hungarian_city_list_screenshot.png" alt="Hungarian City Database - Official Postal List" style="max-width:100%; height:auto; border-radius:8px;" loading="lazy">
+        </div>
+    </div>
+</section>
+
+
+<section class="oe_container" style="padding: 30px 0 10px 0;">
+    <div class="oe_row oe_spaced">
+        <div class="oe_span12">
+            <h2 style="color: var(--color_dark_navy); font-weight:700; margin-bottom:10px;">
+                Populate your Odoo with the official Hungarian city and postal code database
+            </h2>
+            <h3 style="color: var(--color_slate_blue); font-weight:400; font-size:18px;">
+                …and automatically link your existing partners to the right cities.
+            </h3>
+            <p style="font-size:16px; line-height:1.7; color: var(--color_slate_grey); margin-top:25px;">
+                Hungarian addresses are notoriously tricky: postal codes, city names, and counties
+                don't always follow obvious patterns. The city of <strong>Budapest</strong> alone has
+                dozens of districts with their own postal codes, and smaller settlements can share
+                the same code. Manually entering city data is slow, inconsistent, and prone to error.
+            </p>
+            <p style="font-size:16px; line-height:1.7; color: var(--color_slate_grey);">
+                <strong>Hungarian City Database – Official Postal List</strong> solves this by
+                shipping the <strong>official Magyar Posta (Hungarian Post) city list</strong>
+                directly into your Odoo system. Every city is pre-loaded with its postal code and
+                correct county (state). Better yet, a smart post-install process automatically links
+                your <strong>existing Hungarian partners</strong> to the right city records – so your
+                data is immediately consistent and correct.
+            </p>
+        </div>
+    </div>
+</section>
+
+
+<section class="oe_container" style="padding: 20px 0 10px 0;">
+    <div class="oe_row oe_spaced">
+        <div class="oe_span12" style="text-align:center;">
+            <img src="hungarian_city_list_screenshot.png" alt="Hungarian City Database - main screenshot" style="max-width:100%; height:auto; border-radius:10px;
+                        box-shadow:0 10px 30px var(--color_transparent_medium_blue);" loading="lazy">
+        </div>
+    </div>
+</section>
+
+
+<div class="hcd-tabs" style="padding: 20px 0 30px 0;">
+
+    <input id="hcd-tab-desc" type="radio" name="hcd-tab" checked="">
+    <input id="hcd-tab-tut" type="radio" name="hcd-tab">
+    <input id="hcd-tab-about" type="radio" name="hcd-tab">
+
+    <div class="hcd-tab-labels">
+        <label for="hcd-tab-desc">Description</label>
+        <label for="hcd-tab-tut">Tutorial</label>
+        <label for="hcd-tab-about">About Us</label>
+    </div>
+
+    
+    <div class="hcd-tab-content" id="hcd-content-desc">
+
+        
+        <section style="padding: 10px 0 40px 0;">
+            <div style="text-align:center; margin-bottom:30px;">
+                <h2 style="color: var(--color_dark_navy); font-weight:700;">Key Features</h2>
+            </div>
+
+            
+            <div class="hcd-feature-card">
+                <div class="hcd-card-header">
+                    📮 Official Hungarian City List Included
+                </div>
+                <h5 style="color: var(--color_slate_grey); line-height:1.7; margin-bottom: 20px;">
+                    Ships with the <strong>complete, official city database from Magyar Posta</strong>
+                    – the authoritative source for Hungarian postal data.
+                </h5>
+                <div class="hcd-card-body">
+                    <p style="color: var(--color_slate_grey); line-height:1.7;">
+                        Every city record includes:
+                    </p>
+                    <ul style="color: var(--color_slate_grey); line-height:1.9; padding-left:20px;">
+                        <li><strong>Postal code</strong> (zipcode)</li>
+                        <li><strong>City name</strong></li>
+                        <li><strong>County (state)</strong> – correctly linked to the right Hungarian county</li>
+                    </ul>
+                    <p style="color: var(--color_slate_grey); line-height:1.7; margin-bottom: 20px;">
+                        Covers all <strong>19 counties plus Budapest</strong>, with thousands of
+                        settlements – from small villages to the largest cities.
+                    </p>
+                </div>
+            </div>
+
+            
+            <div class="hcd-feature-card">
+                <div class="hcd-card-header">
+                    🏛️ Complete Hungarian County (State) Definitions
+                </div>
+                <h5 style="color: var(--color_slate_grey); line-height:1.7; margin-bottom: 20px;">
+                    All Hungarian counties are pre-defined with their standard codes
+                    (e.g., <strong>BU</strong> for Budapest, <strong>BK</strong> for Bács‑Kiskun,
+                    <strong>PE</strong> for Pest).
+                </h5>
+                <div class="hcd-card-body">
+                    <ul style="color: var(--color_slate_grey); line-height:1.9; padding-left:20px; margin-top:15px; margin-bottom: 20px;">
+                        <li>Cities are automatically linked to the correct county – no manual assignment.</li>
+                        <li>State data is ready to use in addresses, reports, and shipping documents.</li>
+                    </ul>
+                </div>
+            </div>
+
+            
+            <div class="hcd-feature-card">
+                <div class="hcd-card-header">
+                    🔄 Automatic Migration of Existing Partners
+                </div>
+                <h5 style="color: var(--color_slate_grey); line-height:1.7; margin-bottom: 20px;">
+                    When you install the module, a <strong>post-install process</strong> runs
+                    automatically. It scans all your existing <strong>Hungarian partners</strong>
+                    and matches their current zip and city text fields to the new city records.
+                </h5>
+                <div class="hcd-card-body">
+                    <p style="color: var(--color_slate_grey); line-height:1.7; margin-top:15px;"><strong>Matching is intelligent:</strong></p>
+                    <ol style="color: var(--color_slate_grey); line-height:1.9; padding-left:20px;">
+                        <li>First tries <strong>postal code</strong> (the most reliable match)</li>
+                        <li>If multiple cities share a code, it narrows the match using the <strong>city name</strong></li>
+                        <li>Falls back to matching by <strong>city name</strong> if the postal code is missing</li>
+                    </ol>
+                    <p style="color: var(--color_slate_grey); line-height:1.7;">When a match is found, the partner is automatically updated with:</p>
+                    <ul style="color: var(--color_slate_grey); line-height:1.9; padding-left:20px; margin-bottom: 20px;">
+                        <li>The correct <strong>city record</strong> linked</li>
+                        <li>The <strong>standardized city name</strong></li>
+                        <li>The <strong>correct county / state</strong></li>
+                    </ul>
+                </div>
+            </div>
+
+            
+            <div class="hcd-feature-card">
+                <div class="hcd-card-header">
+                    📊 Clear Migration Logging
+                </div>
+                <h5 style="color: var(--color_slate_grey); line-height:1.7; margin-bottom: 20px;">
+                    The migration process logs its progress, so you know exactly how many partners
+                    were processed.
+                </h5>
+                <div class="hcd-card-body">
+                    <ul style="color: var(--color_slate_grey); line-height:1.9; padding-left:20px; margin-top:15px; margin-bottom: 20px;">
+                        <li>Matched and unresolved partners are counted and reported.</li>
+                        <li>Partners that couldn't be resolved are logged with their details.</li>
+                        <li>Review and fix unresolved records manually if needed.</li>
+                    </ul>
+                </div>
+            </div>
+
+            
+            <div class="hcd-feature-card">
+                <div class="hcd-card-header">
+                    🛡️ Safe &amp; Non-Destructive
+                </div>
+                <div class="hcd-card-body" style="margin-top: 15px;">
+                    <ul style="color: var(--color_slate_grey); line-height:1.9; padding-left:20px; margin-bottom: 20px;">
+                        <li>Only partners with <strong>no city already linked</strong> are touched – your verified data is never overwritten.</li>
+                        <li>The migration is <strong>idempotent</strong> – running it again won't cause issues.</li>
+                        <li>If the base Hungarian country record is missing, the process safely skips and logs a warning.</li>
+                    </ul>
+                </div>
+            </div>
+
+            
+            <div class="hcd-feature-card">
+                <div class="hcd-card-header">
+                    ⚡ Efficient Batch Processing
+                </div>
+                <div class="hcd-card-body" style="margin-top: 15px;">
+                    <ul style="color: var(--color_slate_grey); line-height:1.9; padding-left:20px; margin-bottom: 20px;">
+                        <li>All Hungarian city records are loaded once and indexed by postal code and city name.</li>
+                        <li>Database queries are minimized – the migration runs quickly, even with thousands of partners.</li>
+                        <li>Perfect for large installations with many historical records.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="hcd-feature-card">
+                <div class="hcd-card-header">
+                    Perfect For
+                </div>
+                <div class="hcd-card-body" style="margin-top: 15px;">
+                    <ul style="color: var(--color_slate_grey); line-height:1.9; padding-left:20px; margin-bottom: 20px;">
+                        <li><strong>Hungarian companies</strong> managing customer, vendor, or contact addresses</li>
+                        <li><strong>Businesses that ship to Hungary</strong> and need accurate postal data</li>
+                        <li><strong>Accounting and logistics teams</strong> that rely on clean, standardized addresses</li>
+                        <li><strong>Companies migrating from legacy systems</strong> with messy Hungarian address data</li>
+                        <li><strong>Any Odoo user</strong> who wants a complete, official Hungarian city database ready to use</li>
+                    </ul>
+                </div>
+            </div>
+            
+        </section>
+
+        
+        <section style="background-color: var(--color_grey_blue_light); padding: 40px 25px; border-radius:12px; margin-bottom:40px;">
+            <div style="text-align:center; margin-bottom:30px;">
+                <h2 style="color: var(--color_dark_navy); font-weight:700;">
+                    Why Choose Hungarian City Database – Official Postal List?
+                </h2>
+            </div>
+            <table style="width:100%; border-collapse:collapse; background: var(--color_white); border-radius:12px;
+                        overflow:hidden; box-shadow:0 5px 20px var(--color_transparent_light_blue);">
+                <thead>
+                    <tr style="background: var(--color_dark_navy); color: var(--color_white);">
+                        <th style="text-align:left; padding:14px 18px; font-size:15px; width:32%;">Benefit</th>
+                        <th style="text-align:left; padding:14px 18px; font-size:15px;">How It Helps</th>
+                    </tr>
+                </thead>
+                <tbody style="color: var(--color_slate_grey); font-size:15px; line-height:1.6;">
+                    <tr style="border-bottom:1px solid var(--color_light_grey);">
+                        <td style="text-align:left; padding:12px 18px;"><strong>Authoritative data</strong></td>
+                        <td style="text-align:left; padding:12px 18px;">Uses the official Magyar Posta city list – no guesswork, no outdated info.</td>
+                    </tr>
+                    <tr style="border-bottom:1px solid var(--color_light_grey); background: var(--color_near_white);">
+                        <td style="text-align:left; padding:12px 18px;"><strong>Saves hours of manual work</strong></td>
+                        <td style="text-align:left; padding:12px 18px;">No need to enter city data by hand – it's all pre-loaded.</td>
+                    </tr>
+                    <tr style="border-bottom:1px solid var(--color_light_grey);">
+                        <td style="text-align:left; padding:12px 18px;"><strong>Cleans up existing data</strong></td>
+                        <td style="text-align:left; padding:12px 18px;">Automatically links old partners to correct city records.</td>
+                    </tr>
+                    <tr style="border-bottom:1px solid var(--color_light_grey); background: var(--color_near_white);">
+                        <td style="text-align:left; padding:12px 18px;"><strong>Consistent addresses</strong></td>
+                        <td style="text-align:left; padding:12px 18px;">Standardizes city names and county assignments across your database.</td>
+                    </tr>
+                    <tr style="border-bottom:1px solid var(--color_light_grey);">
+                        <td style="text-align:left; padding:12px 18px;"><strong>Fewer shipping errors</strong></td>
+                        <td style="text-align:left; padding:12px 18px;">Accurate postal codes mean packages reach the right destination.</td>
+                    </tr>
+                    <tr style="border-bottom:1px solid var(--color_light_grey); background: var(--color_near_white);">
+                        <td style="text-align:left; padding:12px 18px;"><strong>Better reporting</strong></td>
+                        <td style="text-align:left; padding:12px 18px;">Clean, structured address data enables meaningful geographic analysis.</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align:left; padding:12px 18px;"><strong>Fully automated</strong></td>
+                        <td style="text-align:left; padding:12px 18px;">The migration runs on install – no manual steps required.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        
+        <section style="background: linear-gradient(135deg, var(--color_dark_navy) 0%, var(--color_light_blue) 100%);
+                    border-radius:14px; padding: 45px 30px; text-align:center;">
+            <h2 style="color: var(--color_white); font-weight:700; margin-top:0;">
+                Stop entering Hungarian cities by hand
+            </h2>
+            <p style="color: var(--color_cool_grey); font-size:17px; line-height:1.7; max-width:760px; margin:0 auto;">
+                Load the official postal database and let Odoo clean up your partner addresses automatically.
+            </p>
+        </section>
+
+    </div>
+
+    
+    <div class="hcd-tab-content" id="hcd-content-tut">
+
+    <section style="padding: 10px 0 30px 0;">
+        <h2 style="color: var(--color_dark_navy); font-weight:700; margin-bottom:20px;">Tutorial</h2>
+        <p style="font-size:16px; line-height:1.7; color: var(--color_slate_grey);">
+            This section explains the most important thing to know before using the module.
+        </p>
+
+        
+        <div style="text-align:center; margin-bottom: 30px;">
+        <img src="hu_city.png" alt="Hungarian City Database – Tutorial 1" style="max-width:100%; height:auto; border-radius:10px;
+                    box-shadow:0 10px 30px var(--color_transparent_medium_blue);" loading="lazy">
+        </div>
+
+        <div style="text-align:center; margin-bottom: 30px;">
+        <img src="hu_city_2.png" alt="Hungarian City Database – Tutorial 2" style="max-width:100%; height:auto; border-radius:10px;
+                    box-shadow:0 10px 30px var(--color_transparent_medium_blue);" loading="lazy">
+        </div>
+
+        
+        <div style="background: var(--color_warm_yellow); border-left:5px solid var(--color_amber_gold); border-radius:8px;
+                    padding:22px 26px; margin-top:25px;">
+            <p style="margin:0; color: var(--color_bronze_brown); font-size:16px; line-height:1.7;">
+                <strong>Note:</strong> You have to choose the country first — only after that
+                can you see the drop-down menu.
+            </p>
+        </div>
+
+
+        <div style="text-align:center; margin-bottom: 30px; margin-top: 30px;">
+        <img src="hu_city_3.png" alt="Hungarian City Database – Tutorial 3" style="max-width:100%; height:auto; border-radius:10px;
+                    box-shadow:0 10px 30px var(--color_transparent_medium_blue);" loading="lazy">
+        </div>
+
+        <div style="text-align:center; margin-bottom: 30px;">
+        <img src="hu_city_4.png" alt="Hungarian City Database – Tutorial 4" style="max-width:100%; height:auto; border-radius:10px;
+                    box-shadow:0 10px 30px var(--color_transparent_medium_blue);" loading="lazy">
+        </div>
+        
+        <div style="background: var(--color_grey_blue_light); border-radius:12px; padding:22px 26px; margin-top:25px;">
+            <h3 style="color: var(--color_dark_navy); margin-top:0; font-size:18px;">Quick steps</h3>
+            <ol style="color: var(--color_slate_grey); line-height:1.9; padding-left:20px; margin-bottom: 20px;">
+                <li>Install the module from the Apps menu.</li>
+                <li>Open a partner (Contact) form.</li>
+                <li>Select <strong>Hungary</strong> as the country <em>first</em>.</li>
+                <li>The <strong>City</strong> field then becomes a searchable drop-down, populated from the official Magyar Posta list.</li>
+                <li>Pick the city – the postal code and county fill in automatically.</li>
+            </ol>
+        </div>
+    </section>
+
+    </div>
+
+
+    <!-- About Us Tab Content -->
+    <div class="hcd-tab-content" id="hcd-content-about">
+
+        <section style="padding: 10px 0 40px 0;">
+            <div style="text-align:center; margin-bottom:30px;">
+                <h2 style="color: var(--color_dark_navy); font-weight:700;">About Us – DO Tech Zrt. (OdooTech Zrt.)</h2>
+                <h3 style="color: var(--color_light_blue); font-weight:600; font-size:18px; margin-top:10px;">
+                    "Mi csináljuk a magyar Odoo-t!" — We Build the Hungarian Odoo.
+                </h3>
+            </div>
+
+            <p style="font-size:16px; line-height:1.7; color: var(--color_slate_grey); margin-bottom:20px;">
+                At <strong>DO Tech Zrt. (OdooTech Zrt.)</strong>, we believe that enterprise software should adapt to your business—not the other way around. As a specialized software engineering firm and dedicated Odoo partner, our core mission is simple yet bold: <em>"Mi csináljuk a magyar Odoo-t!"</em> (We make Odoo work seamlessly for Hungary.)
+            </p>
+            <p style="font-size:16px; line-height:1.7; color: var(--color_slate_grey); margin-bottom:35px;">
+                While Odoo is a world-class global ERP system, operating a business in Hungary presents unique regulatory, financial, and operational challenges. We bridge that gap by delivering a fully localized, compliant, and tailored Odoo ecosystem designed specifically for enterprises in Hungary and across Europe.
+            </p>
+
+            <div style="text-align:center; margin-bottom:30px;">
+                <h2 style="color: var(--color_dark_navy); font-weight:700;">Why Work With Us?</h2>
+            </div>
+
+            <!-- Feature Card 1 -->
+            <div class="hcd-feature-card">
+                <div class="hcd-card-header">
+                    1. Deep Local Expertise &amp; Compliance
+                </div>
+                <div class="hcd-card-body" style="margin-top: 15px;">
+                    <p style="color: var(--color_slate_grey); line-height:1.7;">
+                        We don't just translate Odoo; we native-engineer it for the Hungarian market. From full compliance with strict tax authority protocols to seamless local data integrations, we make sure your ERP is 100% legally compliant, bulletproof, and ready for audit.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Feature Card 2 -->
+            <div class="hcd-feature-card">
+                <div class="hcd-card-header">
+                    2. End-to-End Solutions
+                </div>
+                <h5 style="color: var(--color_slate_grey); line-height:1.7; margin-bottom: 20px;">
+                    Whether you need a complete ERP migration, complex API integration, or custom module engineering, we handle every stage of your digital transformation with precision and care:
+                </h5>
+                <div class="hcd-card-body">
+                    <ul style="color: var(--color_slate_grey); line-height:1.9; padding-left:20px; margin-bottom: 20px;">
+                        <li>Business Process Analysis &amp; Consulting</li>
+                        <li>Architecture &amp; Workflow Design</li>
+                        <li>Custom Python &amp; JavaScript Development</li>
+                        <li>Data Migration &amp; Odoo Version Upgrade</li>
+                        <li>Training &amp; 24/7 Support</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Feature Card 3 -->
+            <div class="hcd-feature-card">
+                <div class="hcd-card-header">
+                    3. Business-Driven Engineering
+                </div>
+                <div class="hcd-card-body" style="margin-top: 15px;">
+                    <p style="color: var(--color_slate_grey); line-height:1.7;">
+                        We are a team of software engineers and professional domain consultants, with a strong business mindset. We focus on real ROI—reducing manual data entry, automating repetitive tasks, eliminating human errors, and giving leadership real-time insights into company operations.
+                    </p>
+                </div>
+            </div>
+
+            <div style="text-align:center; margin:40px 0 30px 0;">
+                <h2 style="color: var(--color_dark_navy); font-weight:700;">Key Solutions &amp; Localized Innovations</h2>
+            </div>
+
+            <div class="hcd-feature-card">
+                <div class="hcd-card-header">
+                    🚀 Specialized Local Integrations
+                </div>
+                <div class="hcd-card-body" style="margin-top: 15px;">
+                    <ul style="color: var(--color_slate_grey); line-height:1.9; padding-left:20px; margin-bottom: 20px;">
+                        <li><strong>NAV Online Számla Integration:</strong> Fully automated, real-time invoice synchronization with Hungary's National Tax and Customs Administration (NAV 3.0).</li>
+                        <li><strong>Cégjelző Integration:</strong> Direct API connection to retrieve real-time validated company details, tax numbers, and financial data directly into your CRM and Accounting modules.</li>
+                        <li><strong>Hungarian Accounting &amp; Cash Register Sync:</strong> Tailored invoice templates, localized reporting, and cashier system connectivity (including OkosSzámla integration).</li>
+                        <li><strong>Custom Logistics &amp; Warehouse Workflows:</strong> Advanced inventory management tools customized for complex manufacturing and distribution processes.</li>
+                        <li><strong>E-Commerce &amp; Local Payment Connectors:</strong> Seamless bridges linking Odoo Webstores with regional fulfillment, payment, and invoicing systems (like Számlázz.hu).</li>
+                    </ul>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Call to Action / Contact Box -->
+        <section style="background: linear-gradient(135deg, var(--color_dark_navy) 0%, var(--color_light_blue) 100%);
+                    border-radius:14px; padding: 45px 30px; text-align:center; color: var(--color_white);">
+            <h2 style="color: var(--color_white); font-weight:700; margin-top:0;">
+                Ready to Transform Your Business?
+            </h2>
+            <p style="color: var(--color_cool_grey); font-size:17px; line-height:1.7; max-width:760px; margin:0 auto 25px auto;">
+                Whether you are scaling up, replacing legacy systems, or searching for an ERP that speaks both business and Hungarian compliance, DO Tech Zrt. is your strategic partner. Let's build your ideal Odoo system together.
+            </p>
+            <p style="font-size:16px; color: var(--color_white); font-weight:600; margin-bottom:20px;">
+                📩 Contact us today to schedule a consultation with our ERP experts.
+            </p>
+            <div style="background: rgba(255, 255, 255, 0.10); border-radius: 10px; padding: 20px; display: inline-block; text-align: left; max-width: 400px; width: 100%;">
+                <p style="margin: 0 0 8px 0; font-weight: 700; color: #fff;">For support contact us:</p>
+                <p style="margin: 0 0 5px 0; color: var(--color_cool_grey);"><strong>DO Tech (OdooTech Zrt.)</strong></p>
+                <p style="margin: 0 0 5px 0; color: var(--color_cool_grey);">📍 Akácfa utca 54. • Budapest 1073</p>
+                <p style="margin: 0 0 5px 0; color: var(--color_cool_grey);">📞 +36 (1) 800-1040</p>
+                <p style="margin: 0; color: var(--color_cool_grey);">🌐 <a href="https://www.dotech.hu/kapcsolat" target="_blank" style="color: #fff; text-decoration: underline;">info@dotech.hu | dotech.hu</a></p>
+            </div>
+        </section>
+
+    </div>
+
+</div>

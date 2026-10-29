@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="BU" model="res.country.state">
+        <field name="country_id" ref="base.hu"/>
+        <field name="name">Budapest</field>
+        <field name="code">BU</field>
+    </record>
+    <record id="BK" model="res.country.state">
+        <field name="country_id" ref="base.hu"/>
+        <field name="name">Bács-Kiskun</field>
+        <field name="code">BK</field>
+    </record>
+    <record id="BA" model="res.country.state">
+        <field name="country_id" ref="base.hu"/>
+        <field name="name">Baranya</field>
+        <field name="code">BA</field>
+    </record>
+    <record id="BE" model="res.country.state">
+        <field name="country_id" ref="base.hu"/>
+        <field name="name">Békés</field>
+        <field name="code">BE</field>
+    </record>
+    <record id="BZ" model="res.country.state">
+        <field name="country_id" ref="base.hu"/>
+        <field name="name">Borsod-Abaúj-Zemplén</field>
+        <field name="code">BZ</field>
+    </record>
+    <record id="CS" model="res.country.state">
+        <field name="country_id" ref="base.hu"/>
+        <field name="name">Csongrád-Csanád</field>
+        <field name="code">CS</field>
+    </record>
+    <record id="FE" model="res.country.state">
+        <field name="country_id" ref="base.hu"/>
+        <field name="name">Fejér</field>
+        <field name="code">FE</field>
+    </record>
+    <record id="GS" model="res.country.state">
+        <field name="country_id" ref="base.hu"/>
+        <field name="name">Győr-Moson-Sopron</field>
+        <field name="code">GS</field>
+    </record>
+    <record id="HB" model="res.country.state">
+        <field name="country_id" ref="base.hu"/>
+        <field name="name">Hajdú-Bihar</field>
+        <field name="code">HB</field>
+    </record>
+    <record id="HE" model="res.country.state">
+        <field name="country_id" ref="base.hu"/>
+        <field name="name">Heves</field>
+        <field name="code">HE</field>
+    </record>
+    <record id="JN" model="res.country.state">
+        <field name="country_id" ref="base.hu"/>
+        <field name="name">Jász-Nagykun-Szolnok</field>
+        <field name="code">JN</field>
+    </record>
+    <record id="KE" model="res.country.state">
+        <field name="country_id" ref="base.hu"/>
+        <field name="name">Komárom-Esztergom</field>
+        <field name="code">KE</field>
+    </record>
+    <record id="NO" model="res.country.state">
+        <field name="country_id" ref="base.hu"/>
+        <field name="name">Nógrád</field>
+        <field name="code">NO</field>
+    </record>
+    <record id="PE" model="res.country.state">
+        <field name="country_id" ref="base.hu"/>
+        <field name="name">Pest</field>
+        <field name="code">PE</field>
+    </record>
+    <record id="SO" model="res.country.state">
+        <field name="country_id" ref="base.hu"/>
+        <field name="name">Somogy</field>
+        <field name="code">SO</field>
+    </record>
+    <record id="SZ" model="res.country.state">
+        <field name="country_id" ref="base.hu"/>
+        <field name="name">Szabolcs-Szatmár-Bereg</field>
+        <field name="code">SZ</field>
+    </record>
+    <record id="TO" model="res.country.state">
+        <field name="country_id" ref="base.hu"/>
+        <field name="name">Tolna</field>
+        <field name="code">TO</field>
+    </record>
+    <record id="VA" model="res.country.state">
+        <field name="country_id" ref="base.hu"/>
+        <field name="name">Vas</field>
+        <field name="code">VA</field>
+    </record>
+    <record id="VE" model="res.country.state">
+        <field name="country_id" ref="base.hu"/>
+        <field name="name">Veszprém</field>
+        <field name="code">VE</field>
+    </record>
+    <record id="ZA" model="res.country.state">
+        <field name="country_id" ref="base.hu"/>
+        <field name="name">Zala</field>
+        <field name="code">ZA</field>
+    </record>
+</odoo>
