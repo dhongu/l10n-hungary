@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "Hungarian City Database - Official Postal List",
-    "version": "19.0.1.0.20260506",
+    "version": "19.0.1.1.0",
     "icon": "static/description/l10n.png",
     "images": [
         "static/description/hungarian_city_list_screenshot.png",
@@ -21,13 +21,13 @@ Hungarian City Database - Official Postal List
 * Pre-loaded with postal codes, city names, and counties (states).
 * Automatically migrates and links existing Hungarian partners upon installation.
     """,
-    "depends": ["l10n_hu", "base_address_extended"],
+    "depends": ["base_address_extended"],
     "data": [
         "data/res_state_data.xml",
         "data/res_city_data.xml",
         "data/res_country_data.xml",
     ],
-    "post_init_hook": "_post_init_hook",
+    "pre_init_hook": "_pre_init_hook",
     "license": "LGPL-3",
     "installable": True,
     "application": False,
