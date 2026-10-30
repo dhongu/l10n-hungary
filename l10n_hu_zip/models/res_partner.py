@@ -5,7 +5,10 @@ import logging
 import re
 import unicodedata
 
+import psycopg2
+
 from odoo import api, models
+from odoo.service.model import PG_CONCURRENCY_ERRORS_TO_RETRY
 
 _logger = logging.getLogger(__name__)
 
@@ -94,11 +97,39 @@ class ResPartner(models.Model):
             to_write[values] |= partner
         fixed = self.browse()
         for values, partners in to_write.items():
-            partners.write(dict(values))
-            fixed |= partners
+            fixed |= partners._l10n_hu_write_skipping_errors(dict(values))
         if fixed:
             _logger.info("l10n_hu_zip: city set from the postal code on %d contacts", len(fixed))
         return fixed
+
+    def _l10n_hu_write_skipping_errors(self, values):
+        """Write the values on the contacts; return those written.
+
+        A contact that cannot be written (a constraint of another module on data that was
+        already wrong) is logged and left as it is, instead of stopping the whole batch:
+        otherwise the relink stops for good on the first such contact.
+        """
+        try:
+            with self.env.cr.savepoint():
+                self.write(values)
+            return self
+        except psycopg2.Error as error:
+            if error.pgcode in PG_CONCURRENCY_ERRORS_TO_RETRY:
+                raise  # the batch is retried as a whole
+            if len(self) == 1:
+                _logger.warning("l10n_hu_zip: contact %s (id %s) not relinked: %s", self.display_name, self.id, error)
+                return self.browse()
+        except Exception:  # noqa: BLE001
+            if len(self) == 1:
+                _logger.warning(
+                    "l10n_hu_zip: contact %s (id %s) not relinked to city %s", self.display_name, self.id, values,
+                    exc_info=True,
+                )
+                return self.browse()
+        written = self.browse()
+        for partner in self:
+            written |= partner._l10n_hu_write_skipping_errors(values)
+        return written
 
     @api.model
     def _l10n_hu_relink_domain(self):

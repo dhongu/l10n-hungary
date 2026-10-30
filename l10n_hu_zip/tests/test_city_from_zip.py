@@ -117,3 +117,29 @@ class TestCityFromZip(TransactionCase):
         self.env.flush_all()
         self.assertEqual(partner.city_id, self._hu_city("1124", "Budapest XII"))
         self.assertEqual(len(partner.message_ids), messages)
+
+    def test_relink_skips_contact_that_cannot_be_written(self):
+        from unittest.mock import patch
+
+        district_1 = self._hu_city("1011", "Budapest I")
+        good, bad = self.env["res.partner"].create(
+            [
+                {"name": name, "country_id": self.hungary.id, "city_id": district_1.id, "zip": "1124"}
+                for name in ("Good", "Bad")
+            ]
+        )
+        Partner = type(self.env["res.partner"])
+        write = Partner.write
+
+        def failing_write(records, vals):
+            if bad in records:
+                raise ValueError("constraint of another module")
+            return write(records, vals)
+
+        with patch.object(Partner, "write", failing_write), self.assertLogs(
+            "odoo.addons.l10n_hu_zip.models.res_partner", "WARNING"
+        ):
+            fixed = (good | bad).l10n_hu_fix_city_from_zip()
+        self.assertEqual(fixed, good)
+        self.assertEqual(good.city_id, self._hu_city("1124", "Budapest XII"))
+        self.assertEqual(bad.city_id, district_1)
