@@ -38,13 +38,14 @@ class TestCityFromZip(TransactionCase):
         self.assertEqual(city, self._hu_city("1221", "Budapest XXII"))
 
     def test_onchange_zip(self):
-        with Form(self.env["res.partner"]) as partner_form:
-            partner_form.name = "Kánya Zoltán"
-            partner_form.country_id = self.hungary
-            partner_form.zip = "1124"
-            self.assertEqual(partner_form.city_id, self._hu_city("1124", "Budapest XII"))
-            self.assertEqual(partner_form.city, "Budapest XII")
-            self.assertEqual(partner_form.state_id, self.budapest)
+        # not saved: other modules may make more fields required on the contact form
+        partner_form = Form(self.env["res.partner"])
+        partner_form.name = "Kánya Zoltán"
+        partner_form.country_id = self.hungary
+        partner_form.zip = "1124"
+        self.assertEqual(partner_form.city_id, self._hu_city("1124", "Budapest XII"))
+        self.assertEqual(partner_form.city, "Budapest XII")
+        self.assertEqual(partner_form.state_id, self.budapest)
 
     def test_fix_wrong_city(self):
         district_1 = self._hu_city("1011", "Budapest I")
@@ -105,3 +106,14 @@ class TestCityFromZip(TransactionCase):
         self.assertTrue(_matches("Pest", "Pest"))
         self.assertFalse(_matches("Heves", "Békés"))
         self.assertFalse(_matches("Pest", "Budapest"))
+
+    def test_relink_batch_without_tracking(self):
+        district_1 = self._hu_city("1011", "Budapest I")
+        partner = self.env["res.partner"].create(
+            {"name": "Tracked", "country_id": self.hungary.id, "city_id": district_1.id, "zip": "1124"}
+        )
+        messages = len(partner.message_ids)
+        self.env["res.partner"]._l10n_hu_relink_batch(partner.id - 1)
+        self.env.flush_all()
+        self.assertEqual(partner.city_id, self._hu_city("1124", "Budapest XII"))
+        self.assertEqual(len(partner.message_ids), messages)

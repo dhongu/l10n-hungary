@@ -107,7 +107,8 @@ class ResPartner(models.Model):
     @api.model
     def _l10n_hu_relink_batch(self, last_id, limit=RELINK_BATCH):
         """Relink the next batch of contacts after ``last_id``; return (last id, count)."""
-        partners = self.with_context(active_test=False).search(
+        # no chatter message for each of the tens of thousands of contacts relinked
+        partners = self.with_context(active_test=False, tracking_disable=True).search(
             self._l10n_hu_relink_domain() + [("id", ">", last_id)], order="id", limit=limit
         )
         partners.l10n_hu_fix_city_from_zip()
