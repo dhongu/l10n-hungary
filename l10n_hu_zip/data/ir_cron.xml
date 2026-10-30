@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<odoo>
+<odoo noupdate="1">
+    <!-- noupdate: an update of the module must not deactivate a relink in progress -->
     <record id="ir_cron_relink_partners" model="ir.cron">
         <field name="name">Hungary: link contacts to the city of their ZIP</field>
         <field name="model_id" ref="base.model_res_partner" />
