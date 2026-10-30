@@ -2,10 +2,22 @@
 # License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl-3.0).
 
 import logging
+import re
+import unicodedata
 
 from odoo import api, models
 
 _logger = logging.getLogger(__name__)
+
+RELINK_PARAM = "l10n_hu_zip.relink_last_partner_id"
+RELINK_BATCH = 5000
+
+
+def _normalize_city(name):
+    """Compare city names without accents, punctuation and case ("Budapest, XXII." = "Budapest XXII")."""
+    name = unicodedata.normalize("NFKD", name or "")
+    name = "".join(c for c in name if not unicodedata.combining(c)).casefold()
+    return " ".join(re.sub(r"[^\w]+", " ", name).split())
 
 
 class ResPartner(models.Model):
@@ -25,10 +37,18 @@ class ResPartner(models.Model):
             return City, self.env["res.country.state"]
         cities = City.search([("country_id.code", "=", "HU"), ("zipcode", "=", zip_code)])
         if len(cities) > 1 and city_name:
-            needle = city_name.strip().casefold()
-            same_name = cities.filtered(lambda c: c.name.casefold() == needle)
+            needle = _normalize_city(city_name)
+            same_name = cities.filtered(lambda c: _normalize_city(c.name) == needle)
             if len(same_name) == 1:
                 cities = same_name
+            else:
+                # the main locality of the postal code, whose name starts the others
+                # ("Budapest XXII" and "Budapest XXII - Budafok"), when the typed name is it
+                main = cities.filtered(
+                    lambda c: all(_normalize_city(o.name).startswith(_normalize_city(c.name)) for o in cities)
+                )
+                if len(main) == 1 and needle.startswith(_normalize_city(main.name).split()[0]):
+                    cities = main
         state = cities.state_id if len(cities.state_id) == 1 else cities.state_id.browse()
         return (cities if len(cities) == 1 else City), state
 
@@ -47,22 +67,68 @@ class ResPartner(models.Model):
             self.state_id = state
 
     def l10n_hu_fix_city_from_zip(self):
-        """Link the Hungarian contacts to the city of their postal code."""
-        fixed = self.browse()
+        """Link the Hungarian contacts to the city of their postal code.
+
+        The contacts getting the same values are written together: on a large database
+        this runs on tens of thousands of contacts.
+        """
+        cache = {}
+        to_write = {}
         for partner in self:
             if partner.country_id.code != "HU" or not partner.zip:
                 continue
-            if partner.city_id.zipcode == partner.zip.replace(" ", ""):
+            zip_code = partner.zip.replace(" ", "")
+            if partner.city_id.zipcode == zip_code:
                 continue
-            city, state = self._l10n_hu_city_from_zip(partner.zip, partner.city)
+            key = (zip_code, _normalize_city(partner.city))
+            if key not in cache:
+                cache[key] = self._l10n_hu_city_from_zip(zip_code, partner.city)
+            city, state = cache[key]
             if city:
-                values = {"city_id": city.id, "city": city.name, "state_id": city.state_id.id}
+                values = (("city_id", city.id), ("city", city.name), ("state_id", city.state_id.id))
             elif state and partner.state_id != state:
-                values = {"state_id": state.id}
+                values = (("state_id", state.id),)
             else:
                 continue
-            partner.write(values)
-            fixed |= partner
+            to_write.setdefault(values, self.browse())
+            to_write[values] |= partner
+        fixed = self.browse()
+        for values, partners in to_write.items():
+            partners.write(dict(values))
+            fixed |= partners
         if fixed:
             _logger.info("l10n_hu_zip: city set from the postal code on %d contacts", len(fixed))
         return fixed
+
+    @api.model
+    def _l10n_hu_relink_domain(self):
+        return [("country_id.code", "=", "HU"), ("zip", "!=", False)]
+
+    @api.model
+    def _l10n_hu_relink_batch(self, last_id, limit=RELINK_BATCH):
+        """Relink the next batch of contacts after ``last_id``; return (last id, count)."""
+        partners = self.with_context(active_test=False).search(
+            self._l10n_hu_relink_domain() + [("id", ">", last_id)], order="id", limit=limit
+        )
+        partners.l10n_hu_fix_city_from_zip()
+        return (partners[-1].id if partners else last_id), len(partners)
+
+    @api.model
+    def _cron_l10n_hu_relink_partners(self):
+        """Relink all the Hungarian contacts, in batches, then deactivate the cron."""
+        params = self.env["ir.config_parameter"].sudo()
+        cron = self.env["ir.cron"]
+        last_id = int(params.get_param(RELINK_PARAM, 0))
+        remaining = self.with_context(active_test=False).search_count(
+            self._l10n_hu_relink_domain() + [("id", ">", last_id)]
+        )
+        while True:
+            last_id, count = self._l10n_hu_relink_batch(last_id)
+            if not count:
+                params.set_param(RELINK_PARAM, 0)
+                cron._commit_progress(remaining=0, deactivate=True)
+                return
+            params.set_param(RELINK_PARAM, last_id)
+            remaining = max(remaining - count, 0)
+            if cron._commit_progress(count, remaining=remaining) <= 0:
+                return

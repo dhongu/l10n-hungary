@@ -9,4 +9,13 @@
         <field name="state">code</field>
         <field name="code">records.l10n_hu_fix_city_from_zip()</field>
     </record>
+    <record id="action_city_unlink_old" model="ir.actions.server">
+        <field name="name">Hungary: delete unused cities not in the postal list</field>
+        <field name="model_id" ref="base_address_extended.model_res_city" />
+        <field name="binding_model_id" ref="base_address_extended.model_res_city" />
+        <field name="binding_view_types">list</field>
+        <field name="group_ids" eval="[(4, ref('base.group_system'))]" />
+        <field name="state">code</field>
+        <field name="code">model._l10n_hu_unlink_old_cities()</field>
+    </record>
 </odoo>

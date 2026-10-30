@@ -6,4 +6,10 @@ official Magyar Posta list loaded by `l10n_hu_city`.
 - A postal code shared by several localities sets only the county; the city name, when it
   matches one of them, picks the locality.
 - The action *Hungary: set city from ZIP* on contacts relinks the contacts whose city does
-  not match their postal code. It also runs once when the module is installed.
+  not match their postal code. City names are compared without accents and punctuation
+  ("Budapest, XXII." is "Budapest XXII").
+- At install, the Hungarian contacts are relinked: directly on a small database, by the
+  scheduled action *Hungary: link contacts to the city of their ZIP* in batches on a large one
+  (it deactivates itself when done).
+- The action *Hungary: delete unused cities not in the postal list* on cities deletes the
+  Hungarian cities imported before (without postal code) that nothing uses any more.
