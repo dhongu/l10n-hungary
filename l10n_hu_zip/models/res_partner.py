@@ -138,11 +138,15 @@ class ResPartner(models.Model):
     @api.model
     def _l10n_hu_relink_batch(self, last_id, limit=RELINK_BATCH):
         """Relink the next batch of contacts after ``last_id``; return (last id, count)."""
-        # no chatter message for each of the tens of thousands of contacts relinked
-        partners = self.with_context(active_test=False, tracking_disable=True).search(
+        # no chatter message for each of the tens of thousands of contacts relinked, and no
+        # VAT check: only the address changes, a wrong VAT entered before must not stop it
+        partners = self.with_context(active_test=False, tracking_disable=True, no_vat_validation=True).search(
             self._l10n_hu_relink_domain() + [("id", ">", last_id)], order="id", limit=limit
         )
-        partners.l10n_hu_fix_city_from_zip()
+        # a contact of type "contact" takes the address of its parent: writing it would copy
+        # its own address on the parent (upstream sync). It is relinked through its parent,
+        # and left as it is when its address differs from the parent's.
+        partners.filtered(lambda p: not (p.parent_id and p.type == "contact")).l10n_hu_fix_city_from_zip()
         return (partners[-1].id if partners else last_id), len(partners)
 
     @api.model

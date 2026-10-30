@@ -143,3 +143,34 @@ class TestCityFromZip(TransactionCase):
         self.assertEqual(fixed, good)
         self.assertEqual(good.city_id, self._hu_city("1124", "Budapest XII"))
         self.assertEqual(bad.city_id, district_1)
+
+    def test_relink_batch_through_parent(self):
+        district_1 = self._hu_city("1011", "Budapest I")
+        address = {"country_id": self.hungary.id, "city_id": district_1.id, "city": district_1.name, "zip": "1124", "street": "Fő utca 1"}
+        parent = self.env["res.partner"].create({"name": "Parent Kft", "is_company": True, **address})
+        child = self.env["res.partner"].create({"name": "Child", "parent_id": parent.id, "type": "contact"})
+        other = self.env["res.partner"].create(
+            {"name": "Other", "parent_id": parent.id, "type": "contact"}
+        )
+        # a contact holding another address than its parent (inconsistent data): written
+        # directly, it would copy its address on the parent
+        other.sudo()._write({"zip": "1061", "street": "Andrássy út 2"})
+        self.env["res.partner"]._l10n_hu_relink_batch(parent.id - 1)
+        self.assertEqual(parent.city_id, self._hu_city("1124", "Budapest XII"))
+        self.assertEqual(child.city_id, parent.city_id, "relinked through its parent")
+        self.assertEqual(parent.zip, "1124", "the parent keeps its own address")
+        self.assertEqual(parent.street, "Fő utca 1")
+        # standard downstream sync: a contact of type "contact" takes the parent's address
+        self.assertEqual(other.zip, "1124")
+
+    def test_relink_batch_wrong_vat(self):
+        # a VAT entered wrong before must not stop the relink, which only changes the address
+        district_1 = self._hu_city("1011", "Budapest I")
+        parent = self.env["res.partner"].with_context(no_vat_validation=True).create(
+            {"name": "Csaba", "country_id": self.hungary.id, "vat": "200713583660243", "city_id": district_1.id, "zip": "1124"}
+        )
+        self.env["res.partner"].with_context(no_vat_validation=True).create(
+            {"name": "Csaba delivery", "parent_id": parent.id, "type": "delivery", "country_id": self.hungary.id, "zip": "1061"}
+        )
+        self.env["res.partner"]._l10n_hu_relink_batch(parent.id - 1)
+        self.assertEqual(parent.city_id, self._hu_city("1124", "Budapest XII"))
