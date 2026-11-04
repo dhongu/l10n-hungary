@@ -1,0 +1,54 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* l10n_hu_zip
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-04 08:20+0000\n"
+"PO-Revision-Date: 2026-11-04 08:20+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: hu\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. module: l10n_hu_zip
+#: model:ir.model,name:l10n_hu_zip.model_res_city
+msgid "City"
+msgstr "Város"
+
+#. module: l10n_hu_zip
+#: model:ir.model,name:l10n_hu_zip.model_res_partner
+msgid "Contact"
+msgstr "Kapcsolat"
+
+#. module: l10n_hu_zip
+#: model:ir.model.fields,field_description:l10n_hu_zip.field_res_city__display_name
+#: model:ir.model.fields,field_description:l10n_hu_zip.field_res_partner__display_name
+msgid "Display Name"
+msgstr "Megjelenített név"
+
+#. module: l10n_hu_zip
+#: model:ir.actions.server,name:l10n_hu_zip.action_city_unlink_old
+msgid "Hungary: delete unused cities not in the postal list"
+msgstr "Magyarország: a postai listában nem szereplő, nem használt települések törlése"
+
+#. module: l10n_hu_zip
+#: model:ir.actions.server,name:l10n_hu_zip.ir_cron_relink_partners_ir_actions_server
+msgid "Hungary: link contacts to the city of their ZIP"
+msgstr "Magyarország: kapcsolatok hozzárendelése az irányítószámuk szerinti településhez"
+
+#. module: l10n_hu_zip
+#: model:ir.actions.server,name:l10n_hu_zip.action_partner_fix_city_from_zip
+msgid "Hungary: set city from ZIP"
+msgstr "Magyarország: település beállítása irányítószám alapján"
+
+#. module: l10n_hu_zip
+#: model:ir.model.fields,field_description:l10n_hu_zip.field_res_city__id
+#: model:ir.model.fields,field_description:l10n_hu_zip.field_res_partner__id
+msgid "ID"
+msgstr "ID"
