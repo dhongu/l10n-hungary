@@ -3,7 +3,7 @@
 {
     "name": "Hungary - City from ZIP",
     "summary": "Fill in the Hungarian city and county from the postal code",
-    "version": "19.0.1.1.4",
+    "version": "19.0.1.1.5",
     "author": "Terrabit",
     "website": "https://www.terrabit.ro",
     "category": "Localization",
